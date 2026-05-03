@@ -3,25 +3,58 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-ink: #0a0a0a;
+  --color-ivory: #F1ECE3;
+  --color-burgundy: #800020;
+  --color-sand: #C8B89B;
+  --color-slate: #3F4549;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html, body {
+  background: var(--color-ivory);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+/* Headlines: tighter tracking, heavier weight */
+h1, h2, h3 {
+  letter-spacing: -0.02em;
+  font-weight: 800;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* Eyebrow utility */
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--color-burgundy);
 }
+
+/* CTA pill (matches storefront polish push) */
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 999px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 13px;
+  transition: transform .15s ease, background-color .15s ease;
+}
+
+.btn-pill-primary {
+  background: var(--color-burgundy);
+  color: #fff;
+}
+.btn-pill-primary:hover { background: #a30028; transform: translateY(-1px); }
+
+.btn-pill-outline {
+  background: transparent;
+  color: var(--color-ink);
+  border: 1px solid var(--color-ink);
+}
+.btn-pill-outline:hover { background: var(--color-ink); color: #fff; }

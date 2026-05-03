@@ -1,101 +1,81 @@
-import Image from "next/image";
+import Link from "next/link";
+import { getProducts } from "@/lib/easyorders";
 
-export default function Home() {
+export default async function HomePage() {
+  const products = await getProducts();
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <>
+      {/* Hero */}
+      <section className="bg-ink text-ivory">
+        <div className="mx-auto grid max-w-wrap items-center gap-10 px-5 py-24 md:grid-cols-2">
+          <div>
+            <p className="eyebrow !text-burgundy">VIDDA WEAR</p>
+            <h1 className="mt-3 text-5xl font-extrabold leading-tight tracking-tightest md:text-7xl">
+              Heavyweight streetwear.<br />
+              Built in Alexandria.
+            </h1>
+            <p className="mt-6 max-w-md text-lg leading-7 opacity-80">
+              400 GSM. Egyptian cotton. Try before you pay — every governorate.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/pages/summer-26" className="btn-pill btn-pill-primary">
+                Pre-order Summer ’26
+              </Link>
+              <Link href="/collections/hoodies" className="btn-pill btn-pill-outline !text-ivory !border-ivory hover:!bg-ivory hover:!text-ink">
+                Shop Hoodies
+              </Link>
+            </div>
+          </div>
+          <div className="aspect-[4/5] w-full rounded-sm bg-cover bg-center shadow-cinematic" style={{ backgroundImage: "url(https://files.easy-orders.net/1777153928233560405.png)" }} />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </section>
+
+      {/* Featured products */}
+      <section className="bg-ivory">
+        <div className="mx-auto max-w-wrap px-5 py-24">
+          <div className="mb-12 flex items-end justify-between">
+            <div>
+              <p className="eyebrow">Shop the heavyweight line</p>
+              <h2 className="mt-2 text-4xl font-extrabold tracking-tightest md:text-5xl">Built for presence.</h2>
+            </div>
+            <Link href="/collections/hoodies" className="hidden text-sm font-semibold underline md:block">
+              View all →
+            </Link>
+          </div>
+          <div className="grid gap-6 md:grid-cols-3">
+            {products.slice(0, 3).map((p) => (
+              <Link key={p.id} href={`/products/${p.slug}`} className="group block">
+                <div
+                  className="aspect-[4/5] w-full rounded-sm bg-ink bg-cover bg-center transition-transform group-hover:scale-[1.01]"
+                  style={{ backgroundImage: `url(${p.images[0]?.src})` }}
+                  aria-label={p.title}
+                />
+                <div className="mt-3 flex items-center justify-between text-sm">
+                  <span className="font-semibold">{p.title}</span>
+                  <span className="font-bold text-burgundy">{p.price} EGP</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* TBPY band */}
+      <section className="bg-ink text-ivory">
+        <div className="mx-auto grid max-w-wrap gap-10 px-5 py-20 md:grid-cols-3">
+          {[
+            { eyebrow: "Try Before You Pay", body: "Open the box, try it on, then pay. Cash on delivery, every governorate." },
+            { eyebrow: "14-Day Returns", body: "Size off? We collect, swap or refund. No restocking fees." },
+            { eyebrow: "Fast Shipping", body: "Cairo + Alex: 1–2 days. Other governorates: 2–4 days." },
+          ].map((b) => (
+            <div key={b.eyebrow}>
+              <p className="eyebrow">{b.eyebrow}</p>
+              <p className="mt-3 text-base leading-7 opacity-80">{b.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    </>
   );
 }

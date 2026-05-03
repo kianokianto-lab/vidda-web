@@ -1,36 +1,120 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# vidda-web
 
-## Getting Started
+Next.js 14 (App Router) rebuild of the VIDDA WEAR storefront.
 
-First, run the development server:
+This is **Phase 2, milestone 1** — a working scaffold with:
+
+- TypeScript + Tailwind 3 + brand-locked design tokens (Cairo typography, ink/burgundy/ivory palette)
+- App Router pages: home, links (bio replacement), Summer '26 LP, FAQ, About, PDP, PLP
+- EasyOrders REST client (`lib/easyorders.ts`) with static product fallback
+- SEO baseline: `generateMetadata` per page, OG tags, JSON-LD (Organization, Product, BreadcrumbList, FAQPage)
+- Auto-generated `sitemap.xml` + `robots.txt`
+- Preserves the contact info + schema parity from the live storefront so the migration doesn't lose SEO trust signals
+
+## Stack
+
+| Layer | Choice |
+|---|---|
+| Framework | Next.js 14 (App Router) |
+| Language | TypeScript 5 |
+| Styling | Tailwind 3 + custom brand tokens |
+| Typography | Cairo (Latin + Arabic via `next/font/google`) |
+| Data | EasyOrders REST API (typed client in `lib/easyorders.ts`) |
+| Hosting target | Vercel (recommended) |
+| Domain | `viddawear.store` (cutover in milestone 6) |
+
+## Local dev
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
+cp .env.local.example .env.local
+# Add EASYORDERS_TOKEN= ... (optional; without it the static catalog is used)
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Build & lint
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+pnpm build    # Production build
+pnpm lint     # ESLint
+pnpm start    # Production server
+```
 
-## Learn More
+## Project structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+app/
+  layout.tsx                    Root layout, header, footer, Org schema, metadata
+  page.tsx                      Homepage
+  links/                        /links — bio Linktree replacement
+  pages/
+    summer-26/                  /pages/summer-26 — drop LP
+    about-us/                   /pages/about-us
+    faq/                        /pages/faq with FAQPage JSON-LD
+  products/[slug]/              PDP with Product + BreadcrumbList JSON-LD
+  collections/[slug]/           PLP (hoodies / pants / summer-26)
+  sitemap.ts                    /sitemap.xml
+  robots.ts                     /robots.txt
+components/
+  site-header.tsx               Sticky black nav with Summer '26 accent
+  site-footer.tsx               Real contact info from live store
+  organization-schema.tsx       JSON-LD Organization (parity with EO storefront)
+lib/
+  easyorders.ts                 Typed EO REST client + static fallback
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Brand tokens (do not extend without sign-off)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Token | Value | Usage |
+|---|---|---|
+| `ink` | `#0a0a0a` | Primary surface, text on ivory |
+| `ivory` | `#F1ECE3` | Page background |
+| `burgundy` | `#800020` | Accent, CTAs, prices |
+| `sand` | `#C8B89B` | Summer '26 only |
+| `slate` | `#3F4549` | Summer '26 only |
+| Type | Cairo (400/500/700/800/900) | Latin + Arabic |
 
-## Deploy on Vercel
+## Roadmap (Phase 2 milestones)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **M1 (this commit)**: Scaffold + design tokens + page shells + EO API client + SEO baseline
+- **M2**: Catalog (PDP variant selectors, PLP filters, cart drawer, EO order webhook)
+- **M3**: Summer '26 LP polish + photo masters from shoot + email capture (Klaviyo or Mailchimp)
+- **M4**: Checkout (EO redirect or Stripe direct)
+- **M5**: SEO/analytics, sitemap submission, IndexNow, GA4, Pixel
+- **M6**: DNS + SSL cutover from EasyOrders to Vercel — needs registrar credentials
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Environment variables
+
+Create `.env.local` with:
+
+```
+EASYORDERS_TOKEN=eyJ...        # Bearer JWT from EO admin login
+NEXT_PUBLIC_GA_ID=G-XXXXXXX    # Google Analytics 4 (M5)
+NEXT_PUBLIC_PIXEL_ID=...       # Meta Pixel (M5)
+```
+
+The token is short-lived. For production, regenerate via the EO admin login flow and rotate via Vercel env vars.
+
+## Migrating from EasyOrders
+
+The live storefront at `https://www.viddawear.store` is currently served by EasyOrders. This Next.js build mirrors:
+
+- Per-page metadata + canonical from `header_code_current.html`
+- Organization schema (logo, sameAs, contactPoint, address) — parity verified
+- Product schema (sku, price=999, currency=EGP) — parity verified
+- Real contact info: WhatsApp `+20 105 002 7773`, email `viddawear@gmail.com`, IG/TikTok/FB
+- Branding: ink/burgundy/ivory palette, Cairo typography, pill CTAs
+
+DNS cutover plan (M6):
+
+1. Deploy to Vercel under preview URL
+2. QA sign-off on all routes
+3. Add `viddawear.store` to Vercel project (DNS A/AAAA records to Vercel)
+4. Issue SSL via Vercel (auto)
+5. Decommission EasyOrders custom domain (keep storefront alive at the EO subdomain as a fallback for 30 days)
+
+## License
+
+Private — © VIDDA WEAR. Not for redistribution.
