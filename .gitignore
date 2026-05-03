@@ -38,3 +38,8 @@ next-env.d.ts
 # Local order persistence (M4) — swapped for SQLite in M5
 /data/
 
+
+# Admin uploads (M5)
+/public/uploads/*
+!/public/uploads/.gitkeep
+
