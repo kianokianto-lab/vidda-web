@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getProducts } from "@/lib/easyorders";
+import { EmailSignup } from "@/components/email-signup";
 
 export default async function HomePage() {
   const products = await getProducts();
@@ -76,6 +77,16 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Email capture */}
+      <EmailSignup
+        source="home"
+        variant="light"
+        eyebrow="Insider list"
+        title="Drops, before they drop."
+        subtitle="Be first when Summer ’26 + future drops open. No spam. Unsubscribe anytime."
+        cta="Join the list"
+      />
     </>
   );
 }
