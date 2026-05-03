@@ -11,6 +11,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 import crypto from "crypto";
+import { orders as ordersRepo } from "./repos";
 
 export interface OrderLineInput {
   productSlug: string;
@@ -119,8 +120,26 @@ export async function createOrder(input: OrderInput): Promise<Order> {
     createdAt: new Date().toISOString(),
   };
 
-  await ensureDataDir();
-  await fs.appendFile(ORDERS_FILE, JSON.stringify(order) + "\n", "utf-8");
+  // Primary persistence: SQLite via repos (M5+).
+  // Best-effort JSONL mirror retained for greppable backup + bridge from M4.
+  ordersRepo.create({
+    id: order.id,
+    customer: order.customer,
+    lines: order.lines,
+    paymentMethod: order.paymentMethod,
+    total: order.total,
+    currency: order.currency,
+    status: order.status,
+    source: order.source ?? null,
+    locale: order.locale ?? null,
+  });
+  try {
+    await ensureDataDir();
+    await fs.appendFile(ORDERS_FILE, JSON.stringify(order) + "\n", "utf-8");
+  } catch (e) {
+    // JSONL mirror is non-critical when SQLite is the source of truth.
+    console.warn(`[orders] jsonl mirror failed for ${order.id}:`, e);
+  }
 
   // Fan out to EasyOrders webhook (best effort).
   await dispatchWebhook(order).catch((e) => {

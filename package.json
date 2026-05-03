@@ -9,12 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^12.9.0",
+    "iron-session": "^8.0.4",
     "next": "14.2.35",
     "react": "^18",
     "react-dom": "^18",
     "zustand": "^5.0.12"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^3.0.0",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
