@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { useCart, cartTotals, checkoutOnEasyOrders, checkoutOnWhatsApp } from "@/lib/cart";
+import { useCart, cartTotals } from "@/lib/cart";
 
 export function CartDrawer() {
   const { lines, isOpen, closeCart, removeLine, setQty } = useCart();
@@ -77,12 +77,14 @@ export function CartDrawer() {
             </div>
             <p className="mt-1 text-xs opacity-60">Shipping calculated at checkout. Try before you pay.</p>
             <div className="mt-4 flex flex-col gap-2">
-              <button onClick={() => checkoutOnWhatsApp(lines)} className="btn-pill btn-pill-primary justify-center">
-                Checkout on WhatsApp
-              </button>
-              <button onClick={() => checkoutOnEasyOrders(lines)} className="btn-pill btn-pill-outline justify-center">
-                Continue on EasyOrders
-              </button>
+              <Link
+                href="/checkout"
+                onClick={closeCart}
+                className="btn-pill btn-pill-primary justify-center"
+              >
+                Continue to checkout
+              </Link>
+              <p className="text-center text-xs opacity-60">Cash on delivery · WhatsApp · EasyOrders all on the next page</p>
             </div>
           </footer>
         )}
