@@ -66,10 +66,26 @@ export interface EOSettings {
 
 export const EO = {
   settings: () => eo<EOSettings>("/stores/settings"),
-  products: () => eo<{ products: EOProduct[]; count: number }>("/products"),
+  products: () => eo<unknown>("/products"),
   product: (id: string) => eo<EOProduct>(`/products/${id}`),
   orders: () => eo<unknown>("/orders"),
 };
+
+/**
+ * Defensively normalize the products list across EO response shapes.
+ * The API has shipped at least 3 envelopes in the wild:
+ *   { products: [...] }, { data: [...] }, or a bare array.
+ */
+function normalizeProducts(raw: unknown): EOProduct[] {
+  if (Array.isArray(raw)) return raw as EOProduct[];
+  if (raw && typeof raw === "object") {
+    const r = raw as Record<string, unknown>;
+    if (Array.isArray(r.products)) return r.products as EOProduct[];
+    if (Array.isArray(r.data)) return r.data as EOProduct[];
+    if (Array.isArray(r.items)) return r.items as EOProduct[];
+  }
+  return [];
+}
 
 /**
  * Static catalog fallback for builds where EO API isn't reachable
@@ -116,8 +132,9 @@ export const STATIC_PRODUCTS: EOProduct[] = [
 
 export async function getProducts(): Promise<EOProduct[]> {
   try {
-    const r = await EO.products();
-    return r.products;
+    const raw = await EO.products();
+    const list = normalizeProducts(raw);
+    return list.length > 0 ? list : STATIC_PRODUCTS;
   } catch {
     return STATIC_PRODUCTS;
   }
