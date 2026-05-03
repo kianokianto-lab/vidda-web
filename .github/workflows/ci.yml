@@ -2,9 +2,8 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: ["**"]
   pull_request:
-    branches: [main]
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -36,7 +35,8 @@ jobs:
 
       - name: Build
         run: pnpm build
-        env:
-          # Optional: set EASYORDERS_TOKEN as a repo secret to fetch live products at build time.
-          # Without it, the static catalog fallback is used.
-          EASYORDERS_TOKEN: ${{ secrets.EASYORDERS_TOKEN }}
+        # NOTE: EASYORDERS_TOKEN is intentionally NOT passed to the build.
+        # The live EO API ships products without a normalized `images` array, which crashes
+        # the prerender. Until we have the documented EO API spec, the static catalog
+        # fallback (lib/easyorders.ts → STATIC_PRODUCTS) is the source of truth at build time.
+        # Live data can be re-wired in M3/M4 once the EO product schema is locked.

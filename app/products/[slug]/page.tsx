@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getProductBySlug, getProducts } from "@/lib/easyorders";
+import { ProductBuyBox } from "@/components/product-buy-box";
 
 interface Props { params: { slug: string } }
 
@@ -75,23 +76,7 @@ export default async function ProductPage({ params }: Props) {
           <h1 className="mt-2 text-3xl font-extrabold tracking-tightest md:text-5xl">{product.title}</h1>
           <p className="mt-4 text-2xl font-bold text-burgundy">{product.price} EGP</p>
           <p className="mt-6 leading-7 opacity-80">{product.description}</p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <a
-              href={`https://www.viddawear.store/products/${product.slug}`}
-              className="btn-pill btn-pill-primary"
-            >
-              Order on EasyOrders →
-            </a>
-            <a
-              href={`https://wa.me/201050027773?text=${encodeURIComponent("Hi, I want to order: " + product.title)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-pill btn-pill-outline"
-            >
-              WhatsApp us
-            </a>
-          </div>
-          <p className="mt-6 text-sm opacity-70">Try before you pay · 14-day returns · Cash on delivery</p>
+          <ProductBuyBox product={product} />
         </div>
       </div>
     </section>

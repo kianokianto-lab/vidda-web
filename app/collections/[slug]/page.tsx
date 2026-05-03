@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { getProducts } from "@/lib/easyorders";
+import { CollectionGrid } from "@/components/collection-grid";
 
 interface Props { params: { slug: string } }
 
@@ -55,21 +55,11 @@ export default async function CollectionPage({ params }: Props) {
         <h1 className="mt-2 text-4xl font-extrabold tracking-tightest md:text-6xl">{collection.title}</h1>
         <p className="mt-4 max-w-2xl text-lg leading-7 opacity-80">{collection.description}</p>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {products.length === 0 ? (
-            <p className="opacity-70">More pieces coming soon.</p>
-          ) : (
-            products.map((p) => (
-              <Link key={p.id} href={`/products/${p.slug}`} className="group block">
-                <div className="aspect-[4/5] w-full rounded-sm bg-ink bg-cover bg-center transition group-hover:scale-[1.01]" style={{ backgroundImage: `url(${p.images[0]?.src})` }} />
-                <div className="mt-3 flex items-center justify-between text-sm">
-                  <span className="font-semibold">{p.title}</span>
-                  <span className="font-bold text-burgundy">{p.price} EGP</span>
-                </div>
-              </Link>
-            ))
-          )}
-        </div>
+        {products.length === 0 ? (
+          <p className="mt-12 opacity-70">More pieces coming soon.</p>
+        ) : (
+          <CollectionGrid products={products} />
+        )}
       </div>
     </section>
   );

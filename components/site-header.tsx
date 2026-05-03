@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CartButton } from "@/components/cart-button";
 
 const NAV = [
   { href: "/collections/hoodies", label: "Hoodies" },
@@ -26,9 +27,7 @@ export function SiteHeader() {
             </Link>
           ))}
         </nav>
-        <Link href="/links" className="btn-pill btn-pill-primary !py-2 !px-4 !text-[11px]">
-          Shop
-        </Link>
+        <CartButton />
       </div>
     </header>
   );
