@@ -90,6 +90,10 @@ export const STATIC_PRODUCTS: EOProduct[] = [
     ],
     in_stock: true,
     sku: "VIDDA-HOODIE-01",
+    options: [
+      { name: "Size", values: ["S", "M", "L", "XL"] },
+      { name: "Color", values: ["Black", "Burgundy", "Off-white"] },
+    ],
   },
   {
     id: "vidda-street-pants",
@@ -104,6 +108,9 @@ export const STATIC_PRODUCTS: EOProduct[] = [
     ],
     in_stock: true,
     sku: "VIDDA-PANTS-01",
+    options: [
+      { name: "Size", values: ["S", "M", "L", "XL"] },
+    ],
   },
 ];
 
